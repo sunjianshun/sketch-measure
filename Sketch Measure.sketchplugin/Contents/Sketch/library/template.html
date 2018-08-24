@@ -1101,10 +1101,9 @@ var I18N = {},
                     android.push(
                             '<div id="android-panel"  class="code-item item">',
                             '<label><textarea id="css" rows="6" readonly="readonly">'
-                            + "&lt;TextView\r\n" + "android:textColor=\"" + this.toEdsColorTextLayer(layerData) + "\"\r\n"
-                            + "android:textSize=\"" + this.toEdsFontSize(layerData.fontSize) + "\"\r\n"
-                            + "android:text=\"" + layerData.content + "\"\r\n" +
-                            + "/&gt;" + '</textarea></label>',
+                            + "edsColor = " + this.toEdsColorTextLayer(layerData) + "\r\n"
+                            + "edsFontSize = " + this.toEdsFontSize(layerData.fontSize) + "\r\n"
+                            + '</textarea></label>',
                             '</div>'
                     );
                 }else if (layerData.type == "shape"){
@@ -1133,6 +1132,8 @@ var I18N = {},
                     ios.push(
                             '<div id="ios-panel"  class="code-item item">',
                             '<label><textarea id="css" rows="6" readonly="readonly">'
+                            + "edsColor = " + this.toEdsColorTextLayer(layerData) + "\r\n"
+                            + "edsFontSize = " + this.toEdsFontSize(layerData.fontSize) + "\r\n"
                             + "UILabel *label = [[UILabel alloc] init];\r\n"
                             + "label.frame = CGRectMake(" + this.scaleSize(layerData.rect.x) + "\, " + this.scaleSize(layerData.rect.y) + "\, "
                             + this.scaleSize(layerData.rect.width) + "\, " + this.scaleSize(layerData.rect.height) + ");\r\n"
