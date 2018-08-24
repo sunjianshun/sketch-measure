@@ -1028,7 +1028,7 @@ var I18N = {},
                             '<div id="android-panel"  class="code-item item">',
                             '<label><textarea id="css" rows="6" readonly="readonly">'
                             + "&lt;TextView\r\n" + this.getAndroidWithHeight(layerData)
-                            + "android:text=\"" + layerData.content + "\"\r\n" + "android:textColor=\"" + toEdsColor(layerData.color["argb-hex"]) + "\"\r\n"
+                            + "android:text=\"" + layerData.content + "\"\r\n" + "android:textColor=\"" + toEdsColor(layerData.color) + "\"\r\n"
                         // + "android:text=\"" + layerData.content + "\"\r\n" + "android:textColor=\"" + "abcd" + "\"\r\n"
                             + "android:textSize=\"" + this.unitSize(layerData.fontSize, true) + "\"\r\n" + "/&gt;" + '</textarea></label>',
                             '</div>'
@@ -1576,8 +1576,5 @@ $(function(){ SMApp(<!-- data -->) });
   </head>
   <!--_-->
   <body id="app"></body>
-
-  <!--sjs = <!-- eds -->
-  -->
 
 </html>
