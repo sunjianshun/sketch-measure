@@ -2798,7 +2798,7 @@ SM.extend({
 
         return this.SMPanel({
             url: this.pluginSketch + "/panel/export.html",
-            width: 1200,
+            width: 840,
             height: 800,
             data: data,
             callback: function( data ){

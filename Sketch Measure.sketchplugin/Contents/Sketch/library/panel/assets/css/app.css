@@ -435,7 +435,7 @@ button{
     border: 1px solid #555;
     border-radius: 2px 2px 0 0;
     overflow: auto;
-    height: 368px;
+    height: 580px;
     box-sizing: border-box;
 }
 
@@ -828,7 +828,7 @@ button{
 }
 .orderbox{
     position: absolute;
-    right: 24px;
+    right: 546px;
 }
 .orderbox .radiobox,
 .orderbox .radiobox label{
