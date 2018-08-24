@@ -406,6 +406,7 @@
                 if( $('input[name=export-influenceRect]:checked').length > 0 ) data.exportInfluenceRect = true;
 
                 data.order = $('input[name=order]:checked').val();
+                data.edsConfigs = $('#edu-config').val();
 
                 SMAction('submit', data);
             });

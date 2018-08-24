@@ -2760,6 +2760,7 @@ SM.extend({
 
         self.configs.order = (self.configs.order)? self.configs.order: "positive";
         data.order = self.configs.order;
+        data.edsConfigs = self.configs.edsConfigs;
 
         if(this.selection.count() > 0){
             var selectionArtboards = this.find({key: "(class != NULL) && (class == %@)", match: MSArtboardGroup}, this.selection, true);
@@ -2837,7 +2838,8 @@ SM.extend({
                 self.configs = self.setConfigs({
                     exportOption: data.exportOption,
                     exportInfluenceRect: data.exportInfluenceRect,
-                    order: data.order
+                    order: data.order,
+                    edsConfigs: data.edsConfigs
                 });
             }
         });
@@ -2871,6 +2873,7 @@ SM.extend({
                         scale: self.configs.scale,
                         unit: self.configs.unit,
                         colorFormat: self.configs.colorFormat,
+                        edsConfigs: self.configs.edsConfigs,
                         artboards: [],
                         slices: [],
                         colors: []
@@ -3165,7 +3168,6 @@ SM.extend({
                 return $0;
             }
         });
-        content = content.replace('sjs', 'sjjs');
         return content;
     }
 });
