@@ -889,12 +889,9 @@ var I18N = {},
             var hexValue = value + argbHex.substr(2);
             return hexValue;
         },
-        toEdsColorTextLayer: function(layerData) {
-            var color = layerData.color;
-            var opacity = layerData.opacity;
+        toEdsColor: function(color, opacity, configs) {
             try {
                 var founds = [];
-                var configs = this.project.edsConfigs.split(',');
                 var hex = this.toEdsMobileHex(color["argb-hex"].replace('#', ''), opacity).toLowerCase();
                 for (var index = 0; index < configs.length; ++index) {
                     var item = configs[index].split('=');
@@ -911,43 +908,18 @@ var I18N = {},
             } catch (err) {
                 return err;
             }
+        },
+        toEdsColorTextLayer: function(layerData) {
+            var color = layerData.color;
+            var opacity = layerData.opacity;
+            var configs = this.project.edsConfigs.split(',');
+            return this.toEdsColor(color, opacity, configs);
         },
         toEdsColorShapeLayer: function(layerData, fillIndex) {
             var color = layerData.fills[fillIndex].color;
             var opacity = color['a'];
-            try {
-                var founds = [];
-                var configs = this.project.edsConfigs.split(',');
-                var hex = this.toEdsMobileHex(color["argb-hex"].replace('#', ''), opacity).toLowerCase();
-                for (var index = 0; index < configs.length; ++index) {
-                    var item = configs[index].split('=');
-                    var type = item[0].trim();
-                    if (item[1].trim().replace('#').replace('\n').toLowerCase() == hex) {
-                        founds.push(type);
-                    }
-                }
-                if (founds.length == 0) {
-                    return '未定义';
-                } else {
-                    return JSON.stringify(founds);
-                }
-            } catch (err) {
-                return err;
-            }
-        },
-        toEdsColor: function(layerData, fillIndex) {
-            // try {
-            //     return JSON.stringify(this);
-            // } catch (err) {
-            //     return err;
-            // }
-            if (layerData.type == 'text') {
-                return this.toEdsColorTextLayer(layerData);
-            } else if (layerData.type == 'shape') {
-                return this.toEdsColorShapeLayer(layerData, fillIndex);
-            } else {
-                return '插件未支持';
-            }
+            var configs = this.project.edsConfigs.split(',');
+            return this.toEdsColor(color, opacity, configs);
         },
         inspector: function(){
             if(!this.selectedIndex || (!this.current && !this.current.layers && !this.current.layers[this.selectedIndex])) return false;
@@ -1111,7 +1083,7 @@ var I18N = {},
                             '<div id="android-panel"  class="code-item item">',
                             '<label><textarea id="css" rows="6" readonly="readonly">'
                             + "&lt;TextView\r\n" + this.getAndroidWithHeight(layerData)
-                            + "android:text=\"" + layerData.content + "\"\r\n" + "android:textColor=\"" + this.toEdsColor(layerData) + "\"\r\n"
+                            + "android:text=\"" + layerData.content + "\"\r\n" + "android:textColor=\"" + this.toEdsColorTextLayer(layerData) + "\"\r\n"
                         // + "android:text=\"" + layerData.content + "\"\r\n" + "android:textColor=\"" + "abcd" + "\"\r\n"
                             + "android:textSize=\"" + this.unitSize(layerData.fontSize, true) + "\"\r\n" + "/&gt;" + '</textarea></label>',
                             '</div>'
@@ -1202,7 +1174,7 @@ var I18N = {},
             for (f in layerData.fills) {
                 if(layerData.fills[f].fillType == "color"){
                     // return "android:background=\"" + layerData.fills[f].color["argb-hex"] + "\"\r\n";
-                    return "android:background=\"" + this.toEdsColor(layerData, f) + "\"\r\n";
+                    return "android:background=\"" + this.toEdsColorShapeLayer(layerData, f) + "\"\r\n";
                 }
             }
             return colorCode;
