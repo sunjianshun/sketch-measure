@@ -863,24 +863,35 @@ var I18N = {},
                 layerData = this.current.layers[this.selectedIndex],
                 html = [];
 
-            function toEdsColor(color) {
+            function toEdsColor(layerData) {
+                var result = '';
+                var color = layerData.color;
+                var opacity = layerData.opacity;
                 try {
-                    var hex = toEdsMobileHex(color["argb-hex"].replace('#', ''), color["a"]).toLowerCase();
+                    result += "opacity=" + opacity;
+                    result += ", argb-hex=" + color['argb-hex'];
+                    var hex = toEdsMobileHex(color["argb-hex"].replace('#', ''), opacity).toLowerCase();
+                    result += ", eds-hex=" + hex;
                     var configs = self.project.edsConfigs.split(',');
                     for (var index = 0; index < configs.length; ++index) {
                         var item = configs[index].split('=');
                         if (item[1].trim().replace('#').replace('\n').toLowerCase() == hex) {
-                            return item[0].trim();
+                            // return item[0].trim();
+                            result += ', item[0]=' + item[0].trim();
+                            break;
                         }
                     }
-                    return '未定义';
+                    // return '未定义';
                 } catch (err) {
                     return err;
+                } finally {
+                    return result;
                 }
+
             }
 
-            function toEdsMobileHex(argbHex, alpha) {
-                var alphaHexMap = {
+            function toEdsMobileHex(argbHex, opacity) {
+                var opacityHexMap = {
                     "0.00": "00",
                     "0.05": "0d",
                     "0.10": "1a",
@@ -903,8 +914,8 @@ var I18N = {},
                     "0.95": "f2",
                     "1.00": "ff"
                 };
-                var key = String(Number(alpha).toFixed(2));
-                var value = alphaHexMap[key];
+                var key = String(Number(opacity).toFixed(2));
+                var value = opacityHexMap[key];
                 if (value == 'ff') {
                     value = '';
                 }
@@ -1069,7 +1080,7 @@ var I18N = {},
                             '<div id="android-panel"  class="code-item item">',
                             '<label><textarea id="css" rows="6" readonly="readonly">'
                             + "&lt;TextView\r\n" + this.getAndroidWithHeight(layerData)
-                            + "android:text=\"" + layerData.content + "\"\r\n" + "android:textColor=\"" + toEdsColor(layerData.color) + "\"\r\n"
+                            + "android:text=\"" + layerData.content + "\"\r\n" + "android:textColor=\"" + toEdsColor(layerData) + "\"\r\n"
                         // + "android:text=\"" + layerData.content + "\"\r\n" + "android:textColor=\"" + "abcd" + "\"\r\n"
                             + "android:textSize=\"" + this.unitSize(layerData.fontSize, true) + "\"\r\n" + "/&gt;" + '</textarea></label>',
                             '</div>'
@@ -1080,7 +1091,7 @@ var I18N = {},
                             '<label><textarea id="css" rows="6" readonly="readonly">'
                             + "&lt;View\r\n" + this.getAndroidWithHeight(layerData)
                             + this.getAndroidShapeBackground(layerData) + "/&gt;edsColor="
-                            + toEdsColor(layerData.color)
+                            + toEdsColor(layerData)
                             + "/&gt;" + '</textarea></label>',
                             '</div>'
                     );
