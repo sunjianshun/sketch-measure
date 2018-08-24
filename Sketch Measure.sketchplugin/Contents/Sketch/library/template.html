@@ -865,7 +865,17 @@ var I18N = {},
 
             function toEdsColor(color) {
                 try {
-                    return JSON.stringify(self);
+                    var hex = color["argb-hex"].replace('#', '').toLowerCase();
+                    var configs = self.project.edsConfigs.split(',');
+
+                    for (var index = 0; index < configs.length; ++index) {
+                        var item = configs[index].split('=');
+                        if (item[1].trim().replace('#').replace('\n').toLowerCase() == hex) {
+                            return item[0].trim();
+                        }
+                    }
+                    return color["argb-hex"];
+
                 } catch (err) {
                     return err;
                 }
