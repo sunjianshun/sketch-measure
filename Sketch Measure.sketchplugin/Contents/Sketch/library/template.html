@@ -901,10 +901,10 @@ var I18N = {},
                     }
                 }
                 if (founds.length == 0) {
-                    return '未定义';
-                } else {
-                    return JSON.stringify(founds);
+                    founds.push('未定义');
                 }
+                founds.push(hex);
+                return JSON.stringify(founds);
             } catch (err) {
                 return err;
             }
@@ -920,6 +920,25 @@ var I18N = {},
             var opacity = color['a'];
             var configs = this.project.edsConfigs.split(',');
             return this.toEdsColor(color, opacity, configs);
+        },
+        toEdsFontSize: function (fontSize) {
+            var configs = this.project.edsConfigs.split(',');
+            var founds = [];
+            for (var index = 0; index < configs.length; ++index) {
+                var item = configs[index].split('=');
+                var type = item[0].trim();
+                if (type.toLowerCase().indexOf('fs') == -1) {
+                    continue;
+                }
+                if (item[1].trim().replace('\n') == fontSize) {
+                    founds.push(type);
+                }
+            }
+            if (founds.length == 0) {
+                founds.push('未定义');
+            }
+            founds.push(fontSize);
+            return JSON.stringify(founds);
         },
         inspector: function(){
             if(!this.selectedIndex || (!this.current && !this.current.layers && !this.current.layers[this.selectedIndex])) return false;
@@ -1082,18 +1101,19 @@ var I18N = {},
                     android.push(
                             '<div id="android-panel"  class="code-item item">',
                             '<label><textarea id="css" rows="6" readonly="readonly">'
-                            + "&lt;TextView\r\n" + this.getAndroidWithHeight(layerData)
-                            + "android:text=\"" + layerData.content + "\"\r\n" + "android:textColor=\"" + this.toEdsColorTextLayer(layerData) + "\"\r\n"
-                        // + "android:text=\"" + layerData.content + "\"\r\n" + "android:textColor=\"" + "abcd" + "\"\r\n"
-                            + "android:textSize=\"" + this.unitSize(layerData.fontSize, true) + "\"\r\n" + "/&gt;" + '</textarea></label>',
+                            + "&lt;TextView\r\n" + "android:textColor=\"" + this.toEdsColorTextLayer(layerData) + "\"\r\n"
+                            + "android:textSize=\"" + this.toEdsFontSize(layerData.fontSize) + "\"\r\n"
+                            + "android:text=\"" + layerData.content + "\"\r\n" +
+                            + "/&gt;" + '</textarea></label>',
                             '</div>'
                     );
                 }else if (layerData.type == "shape"){
                     android.push(
                             '<div id="android-panel" class="code-item item">',
                             '<label><textarea id="css" rows="6" readonly="readonly">'
-                            + "&lt;View\r\n" + this.getAndroidWithHeight(layerData)
+                            + "&lt;View\r\n"
                             + this.getAndroidShapeBackground(layerData)
+                            + this.getAndroidWithHeight(layerData)
                             + "/&gt;" + '</textarea></label>',
                             '</div>'
                     );
