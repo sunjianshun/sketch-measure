@@ -865,20 +865,51 @@ var I18N = {},
 
             function toEdsColor(color) {
                 try {
-                    var hex = color["argb-hex"].replace('#', '').toLowerCase();
+                    var hex = toEdsMobileHex(color["argb-hex"].replace('#', ''), color["a"]).toLowerCase();
                     var configs = self.project.edsConfigs.split(',');
-
                     for (var index = 0; index < configs.length; ++index) {
                         var item = configs[index].split('=');
                         if (item[1].trim().replace('#').replace('\n').toLowerCase() == hex) {
                             return item[0].trim();
                         }
                     }
-                    return color["argb-hex"];
-
+                    return '未定义';
                 } catch (err) {
                     return err;
                 }
+            }
+
+            function toEdsMobileHex(argbHex, alpha) {
+                var alphaHexMap = {
+                    "0.00": "00",
+                    "0.05": "0d",
+                    "0.10": "1a",
+                    "0.15": "26",
+                    "0.20": "33",
+                    "0.25": "40",
+                    "0.30": "4d",
+                    "0.35": "59",
+                    "0.40": "66",
+                    "0.45": "73",
+                    "0.50": "80",
+                    "0.55": "8c",
+                    "0.60": "99",
+                    "0.65": "a6",
+                    "0.70": "b3",
+                    "0.75": "bf",
+                    "0.80": "cc",
+                    "0.85": "d9",
+                    "0.90": "c6",
+                    "0.95": "f2",
+                    "1.00": "ff"
+                };
+                var key = String(Number(alpha).toFixed(2));
+                var value = alphaHexMap[key];
+                if (value == 'ff') {
+                    value = '';
+                }
+                var hexValue = value + argbHex.substr(2);
+                return hexValue;
             }
 
             html.push('<h2>' + layerData.name + '</h2>');
@@ -1048,7 +1079,8 @@ var I18N = {},
                             '<div id="android-panel" class="code-item item">',
                             '<label><textarea id="css" rows="6" readonly="readonly">'
                             + "&lt;View\r\n" + this.getAndroidWithHeight(layerData)
-                            + this.getAndroidShapeBackground(layerData)
+                            + this.getAndroidShapeBackground(layerData) + "/&gt;edsColor="
+                            + toEdsColor(layerData.color)
                             + "/&gt;" + '</textarea></label>',
                             '</div>'
                     );
