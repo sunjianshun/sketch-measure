@@ -877,7 +877,7 @@ var I18N = {},
                 "0.75": "bf",
                 "0.80": "cc",
                 "0.85": "d9",
-                "0.90": "c6",
+                "0.90": "e6",
                 "0.95": "f2",
                 "1.00": "ff"
             };
@@ -912,32 +912,30 @@ var I18N = {},
                 return err;
             }
         },
-        toEdsColorShapeLayer: function(layerData) {
-            var result = '';
-            var color = layerData.fill.color;
-            var opacity = layerData.opacity;
+        toEdsColorShapeLayer: function(layerData, fillIndex) {
+            var color = layerData.fills[fillIndex].color;
+            var opacity = color['a'];
             try {
+                var founds = [];
                 var configs = this.project.edsConfigs.split(',');
-                result += "opacity=" + opacity;
-                result += ", argb-hex=" + color['argb-hex'];
                 var hex = this.toEdsMobileHex(color["argb-hex"].replace('#', ''), opacity).toLowerCase();
-                result += ", eds-hex=" + hex;
                 for (var index = 0; index < configs.length; ++index) {
                     var item = configs[index].split('=');
+                    var type = item[0].trim();
                     if (item[1].trim().replace('#').replace('\n').toLowerCase() == hex) {
-                        // return item[0].trim();
-                        result += ', item[0]=' + item[0].trim();
-                        break;
+                        founds.push(type);
                     }
                 }
-                // return '未定义';
+                if (founds.length == 0) {
+                    return '未定义';
+                } else {
+                    return JSON.stringify(founds);
+                }
             } catch (err) {
                 return err;
-            } finally {
-                return result;
             }
         },
-        toEdsColor: function(layerData) {
+        toEdsColor: function(layerData, fillIndex) {
             // try {
             //     return JSON.stringify(this);
             // } catch (err) {
@@ -946,7 +944,7 @@ var I18N = {},
             if (layerData.type == 'text') {
                 return this.toEdsColorTextLayer(layerData);
             } else if (layerData.type == 'shape') {
-                return this.toEdsColorShapeLayer(layerData);
+                return this.toEdsColorShapeLayer(layerData, fillIndex);
             } else {
                 return '插件未支持';
             }
@@ -1204,7 +1202,7 @@ var I18N = {},
             for (f in layerData.fills) {
                 if(layerData.fills[f].fillType == "color"){
                     // return "android:background=\"" + layerData.fills[f].color["argb-hex"] + "\"\r\n";
-                    return "android:background=\"" + this.toEdsColor(layerData) + "\"\r\n";
+                    return "android:background=\"" + this.toEdsColor(layerData, f) + "\"\r\n";
                 }
             }
             return colorCode;
