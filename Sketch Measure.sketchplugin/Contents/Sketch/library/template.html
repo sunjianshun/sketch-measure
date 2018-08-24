@@ -857,72 +857,105 @@ var I18N = {},
                 $('.selected').addClass('hidden');
             }
         },
+        toEdsMobileHex: function(argbHex, opacity) {
+            var opacityHexMap = {
+                "0.00": "00",
+                "0.05": "0d",
+                "0.10": "1a",
+                "0.15": "26",
+                "0.20": "33",
+                "0.25": "40",
+                "0.30": "4d",
+                "0.35": "59",
+                "0.40": "66",
+                "0.45": "73",
+                "0.50": "80",
+                "0.55": "8c",
+                "0.60": "99",
+                "0.65": "a6",
+                "0.70": "b3",
+                "0.75": "bf",
+                "0.80": "cc",
+                "0.85": "d9",
+                "0.90": "c6",
+                "0.95": "f2",
+                "1.00": "ff"
+            };
+            var key = String(Number(opacity).toFixed(2));
+            var value = opacityHexMap[key];
+            if (value == 'ff') {
+                value = '';
+            }
+            var hexValue = value + argbHex.substr(2);
+            return hexValue;
+        },
+        toEdsColorTextLayer: function(layerData) {
+            var color = layerData.color;
+            var opacity = layerData.opacity;
+            try {
+                var founds = [];
+                var configs = this.project.edsConfigs.split(',');
+                var hex = this.toEdsMobileHex(color["argb-hex"].replace('#', ''), opacity).toLowerCase();
+                for (var index = 0; index < configs.length; ++index) {
+                    var item = configs[index].split('=');
+                    var type = item[0].trim();
+                    if (item[1].trim().replace('#').replace('\n').toLowerCase() == hex) {
+                        founds.push(type);
+                    }
+                }
+                if (founds.length == 0) {
+                    return '未定义';
+                } else {
+                    return JSON.stringify(founds);
+                }
+            } catch (err) {
+                return err;
+            }
+        },
+        toEdsColorShapeLayer: function(layerData) {
+            var result = '';
+            var color = layerData.fill.color;
+            var opacity = layerData.opacity;
+            try {
+                var configs = this.project.edsConfigs.split(',');
+                result += "opacity=" + opacity;
+                result += ", argb-hex=" + color['argb-hex'];
+                var hex = this.toEdsMobileHex(color["argb-hex"].replace('#', ''), opacity).toLowerCase();
+                result += ", eds-hex=" + hex;
+                for (var index = 0; index < configs.length; ++index) {
+                    var item = configs[index].split('=');
+                    if (item[1].trim().replace('#').replace('\n').toLowerCase() == hex) {
+                        // return item[0].trim();
+                        result += ', item[0]=' + item[0].trim();
+                        break;
+                    }
+                }
+                // return '未定义';
+            } catch (err) {
+                return err;
+            } finally {
+                return result;
+            }
+        },
+        toEdsColor: function(layerData) {
+            // try {
+            //     return JSON.stringify(this);
+            // } catch (err) {
+            //     return err;
+            // }
+            if (layerData.type == 'text') {
+                return this.toEdsColorTextLayer(layerData);
+            } else if (layerData.type == 'shape') {
+                return this.toEdsColorShapeLayer(layerData);
+            } else {
+                return '插件未支持';
+            }
+        },
         inspector: function(){
             if(!this.selectedIndex || (!this.current && !this.current.layers && !this.current.layers[this.selectedIndex])) return false;
             var self = this,
                 layerData = this.current.layers[this.selectedIndex],
                 html = [];
-
-            function toEdsColor(layerData) {
-                var result = '';
-                var color = layerData.color;
-                var opacity = layerData.opacity;
-                try {
-                    result += "opacity=" + opacity;
-                    result += ", argb-hex=" + color['argb-hex'];
-                    var hex = toEdsMobileHex(color["argb-hex"].replace('#', ''), opacity).toLowerCase();
-                    result += ", eds-hex=" + hex;
-                    var configs = self.project.edsConfigs.split(',');
-                    for (var index = 0; index < configs.length; ++index) {
-                        var item = configs[index].split('=');
-                        if (item[1].trim().replace('#').replace('\n').toLowerCase() == hex) {
-                            // return item[0].trim();
-                            result += ', item[0]=' + item[0].trim();
-                            break;
-                        }
-                    }
-                    // return '未定义';
-                } catch (err) {
-                    return err;
-                } finally {
-                    return result;
-                }
-
-            }
-
-            function toEdsMobileHex(argbHex, opacity) {
-                var opacityHexMap = {
-                    "0.00": "00",
-                    "0.05": "0d",
-                    "0.10": "1a",
-                    "0.15": "26",
-                    "0.20": "33",
-                    "0.25": "40",
-                    "0.30": "4d",
-                    "0.35": "59",
-                    "0.40": "66",
-                    "0.45": "73",
-                    "0.50": "80",
-                    "0.55": "8c",
-                    "0.60": "99",
-                    "0.65": "a6",
-                    "0.70": "b3",
-                    "0.75": "bf",
-                    "0.80": "cc",
-                    "0.85": "d9",
-                    "0.90": "c6",
-                    "0.95": "f2",
-                    "1.00": "ff"
-                };
-                var key = String(Number(opacity).toFixed(2));
-                var value = opacityHexMap[key];
-                if (value == 'ff') {
-                    value = '';
-                }
-                var hexValue = value + argbHex.substr(2);
-                return hexValue;
-            }
-
             html.push('<h2>' + layerData.name + '</h2>');
             // fix 0 [opacity]
             // PROPERTIES
@@ -1080,7 +1113,7 @@ var I18N = {},
                             '<div id="android-panel"  class="code-item item">',
                             '<label><textarea id="css" rows="6" readonly="readonly">'
                             + "&lt;TextView\r\n" + this.getAndroidWithHeight(layerData)
-                            + "android:text=\"" + layerData.content + "\"\r\n" + "android:textColor=\"" + toEdsColor(layerData) + "\"\r\n"
+                            + "android:text=\"" + layerData.content + "\"\r\n" + "android:textColor=\"" + this.toEdsColor(layerData) + "\"\r\n"
                         // + "android:text=\"" + layerData.content + "\"\r\n" + "android:textColor=\"" + "abcd" + "\"\r\n"
                             + "android:textSize=\"" + this.unitSize(layerData.fontSize, true) + "\"\r\n" + "/&gt;" + '</textarea></label>',
                             '</div>'
@@ -1090,8 +1123,7 @@ var I18N = {},
                             '<div id="android-panel" class="code-item item">',
                             '<label><textarea id="css" rows="6" readonly="readonly">'
                             + "&lt;View\r\n" + this.getAndroidWithHeight(layerData)
-                            + this.getAndroidShapeBackground(layerData) + "/&gt;edsColor="
-                            + toEdsColor(layerData)
+                            + this.getAndroidShapeBackground(layerData)
                             + "/&gt;" + '</textarea></label>',
                             '</div>'
                     );
@@ -1171,7 +1203,8 @@ var I18N = {},
             var f;
             for (f in layerData.fills) {
                 if(layerData.fills[f].fillType == "color"){
-                    return "android:background=\"" + layerData.fills[f].color["argb-hex"] + "\"\r\n";
+                    // return "android:background=\"" + layerData.fills[f].color["argb-hex"] + "\"\r\n";
+                    return "android:background=\"" + this.toEdsColor(layerData) + "\"\r\n";
                 }
             }
             return colorCode;
