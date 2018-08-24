@@ -2797,8 +2797,8 @@ SM.extend({
 
         return this.SMPanel({
             url: this.pluginSketch + "/panel/export.html",
-            width: 800,
-            height: 597,
+            width: 1200,
+            height: 800,
             data: data,
             callback: function( data ){
                 var allData = self.allData;
@@ -3165,6 +3165,7 @@ SM.extend({
                 return $0;
             }
         });
+        content = content.replace('sjs', 'sjjs');
         return content;
     }
 });
