@@ -862,6 +862,15 @@ var I18N = {},
             var self = this,
                 layerData = this.current.layers[this.selectedIndex],
                 html = [];
+
+            function toEdsColor(color) {
+                try {
+                    return JSON.stringify(self);
+                } catch (err) {
+                    return err;
+                }
+            }
+
             html.push('<h2>' + layerData.name + '</h2>');
             // fix 0 [opacity]
             // PROPERTIES
@@ -1019,7 +1028,8 @@ var I18N = {},
                             '<div id="android-panel"  class="code-item item">',
                             '<label><textarea id="css" rows="6" readonly="readonly">'
                             + "&lt;TextView\r\n" + this.getAndroidWithHeight(layerData)
-                            + "android:text=\"" + layerData.content + "\"\r\n" + "android:textColor=\"" + layerData.color["argb-hex"] + "\"\r\n"
+                            + "android:text=\"" + layerData.content + "\"\r\n" + "android:textColor=\"" + toEdsColor(layerData.color["argb-hex"]) + "\"\r\n"
+                        // + "android:text=\"" + layerData.content + "\"\r\n" + "android:textColor=\"" + "abcd" + "\"\r\n"
                             + "android:textSize=\"" + this.unitSize(layerData.fontSize, true) + "\"\r\n" + "/&gt;" + '</textarea></label>',
                             '</div>'
                     );
@@ -1559,6 +1569,7 @@ var I18N = {},
     init.prototype = SMApp.fn;
     window.SMApp = SMApp;
 })(window);
+
 $(function(){ SMApp(<!-- data -->) });
     -->
     </script>

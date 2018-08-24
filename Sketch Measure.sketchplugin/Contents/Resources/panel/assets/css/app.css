@@ -826,7 +826,7 @@ button{
 }
 .orderbox{
     position: absolute;
-    right: 24px;
+    left: 24px;
 }
 .orderbox .radiobox,
 .orderbox .radiobox label{
