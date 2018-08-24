@@ -1,5 +1,5 @@
 {
-    "author": "utom",
+    "author": "utom-sjs",
     "commands" : [
         {
             "name": "工具栏",
@@ -51,7 +51,7 @@
             "script": "mark.sketchscript"
         },
         {
-            "name": "导出规范",
+            "name": "导出规范(Edu)",
             "identifier": "commandExport",
             "shortcut": "ctrl shift e",
             "handler" : "commandExport",
@@ -180,7 +180,7 @@
     "identifier": "com.utom.measure",
     "appcast": "https://raw.githubusercontent.com/utom/sketch-measure/master/appcast.xml",
     "homepage": "http://utom.design/measure/",
-    "version": "2.7.5",
+    "version": "112.7.5.1",
     "description" : "Make it a fun to create spec for developers and teammates",
     "authorEmail" : "utombox@gmail.com",
     "name" : "Sketch Measure"

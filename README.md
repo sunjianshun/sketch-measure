@@ -54,7 +54,7 @@ Friendly user interface offers you a more intuitive way of making marks.
 
 ![SPEC EXPORT](http://utom.design/ui.png)
 
-## Spec Export
+## Spec Export(Edu)
 Automatically generate a html page with one click, and inspect all the design details including CSS Styles on it offline.
 
 **If you want to create one artboard by one HTML file, please uncheck "Advanced mode".**

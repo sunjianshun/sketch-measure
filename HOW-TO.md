@@ -79,7 +79,7 @@ Mark shape layer or text layer info, such as, fill color, border color and strok
 
 ##Mark Note
 
-Mark some notes in artboard, and show in `Spec Export` viewer.
+Mark some notes in artboard, and show in `Spec Export(Edu)` viewer.
 
 ![Mark note](http://utom.design/measure/docs/mark-note.png)
 
@@ -91,7 +91,7 @@ Mark some notes in artboard, and show in `Spec Export` viewer.
 
 
 ##Make Exportable
-Quickly set slice presets for the layer you'd like to export. also when you set your design resolution as `dp/sp` unit, can be exporting slices as Android assets by ` Spec Export`.
+Quickly set slice presets for the layer you'd like to export. also when you set your design resolution as `dp/sp` unit, can be exporting slices as Android assets by ` Spec Export(Edu)`.
 
 ![Mark spacings UI](http://utom.design/measure/docs/android-assets.png)
 
@@ -126,7 +126,7 @@ Set color names and export `.xml`  for developer.
 
 
 
-## Spec Export
+## Spec Export(Edu)
 
 Automatically generating html page with one click, inspect all the design details including CSS Styles on it offline.
 
