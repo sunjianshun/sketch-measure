@@ -903,33 +903,32 @@ var I18N = {},
                 if (founds.length == 0) {
                     founds.push('未定义');
                 }
-                founds.push(hex);
-                return JSON.stringify(founds);
+                return JSON.stringify(founds) + " - #" + hex;
             } catch (err) {
                 return err;
             }
         },
-        toEdsCSSInfo: function (layerData) {
-            var result = "----eds----\r\n";
+        toEdsInfo: function (layerData) {
+            var result = "";
             if (layerData.type == 'text') {
-                result += "font-color:" + this.toEdsColorFromLayerData(layerData, layerData.color) + "\r\n";
-                result += "font-size:" + this.toEdsFontSize(layerData.fontSize) + "\r\n";
+                result += "fc:" + this.toEdsColorFromLayerData(layerData, layerData.color) + "\r\n";
+                result += "fs:" + this.toEdsFontSize(layerData.fontSize) + "\r\n";
             } else if (layerData.type == 'shape') {
                 for (var index = 0; index < layerData.fills.length; ++index) {
                     if (layerData.fills[index].fillType == 'color') {
-                        result += "shape-fills[" + index + "]:" + this.toEdsColorFromLayerData(layerData, layerData.fills[index].color) + "\r\n";
+                        result += "fills[" + index + "]:" + this.toEdsColorFromLayerData(layerData, layerData.fills[index].color) + "\r\n";
                     }
                 }
                 for (var index = 0; index < layerData.borders.length; ++index) {
                     if (layerData.borders[index].fillType == 'color') {
-                        result += "shape-borders[" + index + "]:" + this.toEdsColorFromLayerData(layerData, layerData.borders[index].color) + "\r\n";
+                        result += "borders[" + index + "]:" + this.toEdsColorFromLayerData(layerData, layerData.borders[index].color) + "\r\n";
                     }
                 }
                 for (var index = 0; index < layerData.shadows.length; ++index) {
-                    result += "shape-shadows["+ index +"]:" + this.toEdsColorFromLayerData(layerData, layerData.shadows[index].color) + "\r\n";
+                    result += "shadows["+ index +"]:" + this.toEdsColorFromLayerData(layerData, layerData.shadows[index].color) + "\r\n";
                 }
             }
-            result += "----eds----\r\n";
+            result += "------------\r\n";
             return result;
         },
         toEdsColorFromLayerData: function(layerData, color) {
@@ -953,8 +952,7 @@ var I18N = {},
             if (founds.length == 0) {
                 founds.push('未定义');
             }
-            founds.push(fontSize);
-            return JSON.stringify(founds);
+            return JSON.stringify(founds) + " - " + fontSize + this.project.unit;
         },
         inspector: function(){
             if(!this.selectedIndex || (!this.current && !this.current.layers && !this.current.layers[this.selectedIndex])) return false;
@@ -1109,7 +1107,7 @@ var I18N = {},
                 var css = [
                     '<div id="css-panel" class="code-item item">',
                     '<label><textarea id="css" rows="' + (layerData.css.length + 1) + '" readonly="readonly">'
-                    + this.toEdsCSSInfo(layerData)
+                    + this.toEdsInfo(layerData)
                     + layerData.css.join("\r\n") + '</textarea></label>',
                     '</div>'
                 ].join('');
@@ -1119,8 +1117,9 @@ var I18N = {},
                     android.push(
                             '<div id="android-panel"  class="code-item item">',
                             '<label><textarea id="css" rows="6" readonly="readonly">'
-                            + "edsColor = " + this.toEdsColorFromLayerData(layerData, layerData.color) + "\r\n"
-                            + "edsFontSize = " + this.toEdsFontSize(layerData.fontSize) + "\r\n"
+                            // + "edsColor = " + this.toEdsColorFromLayerData(layerData, layerData.color) + "\r\n"
+                            // + "edsFontSize = " + this.toEdsFontSize(layerData.fontSize) + "\r\n"
+                            + this.toEdsInfo(layerData)
                             + '</textarea></label>',
                             '</div>'
                     );
@@ -1128,8 +1127,9 @@ var I18N = {},
                     android.push(
                             '<div id="android-panel" class="code-item item">',
                             '<label><textarea id="css" rows="6" readonly="readonly">'
+                            + this.toEdsInfo(layerData)
                             + "&lt;View\r\n"
-                            + this.getAndroidShapeBackground(layerData)
+                            // + this.getAndroidShapeBackground(layerData)
                             + this.getAndroidWithHeight(layerData)
                             + "/&gt;" + '</textarea></label>',
                             '</div>'
@@ -1150,8 +1150,9 @@ var I18N = {},
                     ios.push(
                             '<div id="ios-panel"  class="code-item item">',
                             '<label><textarea id="css" rows="6" readonly="readonly">'
-                            + "edsColor = " + this.toEdsColorFromLayerData(layerData, layerData.color) + "\r\n"
-                            + "edsFontSize = " + this.toEdsFontSize(layerData.fontSize) + "\r\n"
+                            // + "edsColor = " + this.toEdsColorFromLayerData(layerData, layerData.color) + "\r\n"
+                            // + "edsFontSize = " + this.toEdsFontSize(layerData.fontSize) + "\r\n"
+                            + this.toEdsInfo(layerData)
                             + "UILabel *label = [[UILabel alloc] init];\r\n"
                             + "label.frame = CGRectMake(" + this.scaleSize(layerData.rect.x) + "\, " + this.scaleSize(layerData.rect.y) + "\, "
                             + this.scaleSize(layerData.rect.width) + "\, " + this.scaleSize(layerData.rect.height) + ");\r\n"
@@ -1165,10 +1166,11 @@ var I18N = {},
                     ios.push(
                             '<div id="ios-panel" class="code-item item">',
                             '<label><textarea id="css" rows="6" readonly="readonly">'
+                            + this.toEdsInfo(layerData)
                             + "UIView *view = [[UIView alloc] init];\r\n"
                             + "view.frame = CGRectMake(" + this.scaleSize(layerData.rect.x) + "\, " + this.scaleSize(layerData.rect.y) + "\, "
                             + this.scaleSize(layerData.rect.width) + "\, " + this.scaleSize(layerData.rect.height) + ");\r\n"
-                            + this.getIOSShapeBackground(layerData)
+                            // + this.getIOSShapeBackground(layerData)
                             + '</textarea></label>',
                             '</div>'
                     );
