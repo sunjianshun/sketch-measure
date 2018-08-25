@@ -911,13 +911,13 @@ var I18N = {},
         },
         toEdsColorTextLayer: function(layerData) {
             var color = layerData.color;
-            var opacity = layerData.opacity;
+            var opacity = Math.min(Number(color['a']), Number(layerData.opacity));
             var configs = this.project.edsConfigs.split(',');
             return this.toEdsColor(color, opacity, configs);
         },
         toEdsColorShapeLayer: function(layerData, fillIndex) {
             var color = layerData.fills[fillIndex].color;
-            var opacity = color['a'];
+            var opacity = Math.min(Number(color['a']), Number(layerData.opacity));
             var configs = this.project.edsConfigs.split(',');
             return this.toEdsColor(color, opacity, configs);
         },
